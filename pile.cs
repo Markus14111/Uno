@@ -15,6 +15,12 @@ namespace Uno
             cards = new List<string>();
         }
 
+        //returns array of the current pile state
+        public string[] read()
+        {
+            return cards.ToArray();
+        }
+
         public void addCard(string card)
         {
             cards.Append(card);
