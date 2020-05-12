@@ -33,5 +33,27 @@ namespace Uno
             cards.RemoveAt(index % cards.Count);
             return output;
         }
+
+        public void shuffle()
+        {
+            List<string> shuffled = new List<string>();
+            Random rand = new Random();
+            while(cards.Count > 0)
+            {
+                //draw a random card from cards and put it at the end of the new pile
+                shuffled.Append(draw(rand.Next(cards.Count)));
+            }
+            cards = shuffled;
+        }
+
+        public override string ToString()
+        {
+            string output = "";
+            foreach (string card in cards)
+            {
+                output += card + "\n";
+            }
+            return output;
+        }
     }
 }
