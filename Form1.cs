@@ -20,9 +20,6 @@ namespace Uno
 
             Cards = new Bitmap("Cards.png");
             
-            Pile test = new Pile();
-            test.newDeck();
-            Console.WriteLine(test);
             Game game = new Game(this);
             game.run();
         }
