@@ -18,7 +18,7 @@ namespace Uno
         {
             InitializeComponent();
 
-            Cards = new Bitmap("Cards.png");
+            //Cards = new Bitmap("Cards.png");
             
             Game game = new Game(this);
             game.run();
