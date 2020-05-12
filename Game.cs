@@ -38,7 +38,9 @@ namespace Uno
         public void run()
         {
             bool running = true;
+            bool valid;
             int i = 0;
+            string input;
             //initialize player hands
             playerPile = new Pile[2];
             for (int j = 0; j < playerPile.Length; j++)
@@ -49,14 +51,32 @@ namespace Uno
             //main game loop
             while (running)
             {
-                //draw
-                draw(i);
-                Console.WriteLine(playerPile[i]);
-                if (drawPile.read().Length == 0)
-                    running = false;
-                util.wait(500);
+                valid = false;
+                while (!valid)
+                {
+                    //"+" means drawing, add asking for input here
+                    input = "+";
+                    if (input == "+")
+                    {
+                        draw(i);
+                        if (drawPile.read().Length == 0)
+                            running = false;
+                        valid = true;
+                    }
+                    else
+                    {
+                        if(isvalid(input))
+                        {
+                            topCard = input;
+                            valid = true;
+                        }
+                        else
+                            playerPile[i].addCard(input);
+                    }
+                }
                 i = (i + 1) % 2;
             }
+            Console.WriteLine("{0} \n ------------------------- \n{1}", playerPile[0], playerPile[1]);
         }
     }
 }
