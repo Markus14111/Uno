@@ -15,9 +15,8 @@ namespace Uno
         public Form1()
         {
             InitializeComponent();
-            Pile test = new Pile();
-            test.newDeck();
-            Console.WriteLine(test);
+            Game game = new Game(this);
+            game.run();
         }
     }
 }
