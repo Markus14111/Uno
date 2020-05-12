@@ -12,11 +12,23 @@ namespace Uno
 {
     public partial class Form1 : Form
     {
+        Bitmap Cards;
+
         public Form1()
         {
             InitializeComponent();
+
+            Cards = new Bitmap("Cards.png");
+            
+            Pile test = new Pile();
+            test.newDeck();
+            Console.WriteLine(test);
             Game game = new Game(this);
             game.run();
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
         }
     }
 }
