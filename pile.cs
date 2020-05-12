@@ -15,6 +15,23 @@ namespace Uno
             cards = new List<string>();
         }
 
+        public void newDeck()
+        {
+            cards = new List<string>();
+            //add color cards first
+            foreach (string color in util.colors)
+            {
+                //add numbers
+                for (int i = 0; i <= 9; i++)
+                    addCard(color + i.ToString());
+                //add non-number color cards
+                addCard(color + "+");
+                addCard(color + "S");
+                addCard(color + "T");
+            }
+            addCard("UC");
+            addCard("U+");
+        }
         //returns array of the current pile state
         public string[] read()
         {
