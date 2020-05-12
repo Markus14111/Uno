@@ -23,14 +23,17 @@ namespace Uno
 
         public void addCard(string card)
         {
-            cards.Append(card);
+            cards.Add(card);
         }
 
-        //draws card at a certain index (stadart is top card)
+        //draws card at a certain index (allows negative and index over pilesize)
         public string draw(int index = 0)
         {
-            string output = cards[index % cards.Count];
-            cards.RemoveAt(index % cards.Count);
+            index = index % cards.Count;
+            if (Math.Sign(index) == -1)
+                index = cards.Count + index;
+            string output = cards[index];
+            cards.RemoveAt(index);
             return output;
         }
 
@@ -41,13 +44,15 @@ namespace Uno
             while(cards.Count > 0)
             {
                 //draw a random card from cards and put it at the end of the new pile
-                shuffled.Append(draw(rand.Next(cards.Count)));
+                shuffled.Add(draw(rand.Next(cards.Count)));
             }
             cards = shuffled;
         }
 
         public override string ToString()
         {
+            if (cards.Count == 0)
+                return "Pile is empty";
             string output = "";
             foreach (string card in cards)
             {
