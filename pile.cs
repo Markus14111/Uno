@@ -30,7 +30,8 @@ namespace Uno
                 addCard(color + "T");
             }
             addCard("UC");
-            addCard("U+");
+            addCard("U*");
+            shuffle();
         }
         //returns array of the current pile state
         public string[] read()
