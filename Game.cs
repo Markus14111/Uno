@@ -129,12 +129,12 @@ namespace Uno
                         else
                             playerPile[i].addCard(input);
                     }
-                    Console.WriteLine("{0}               {1}",topCard,drawPile.read().Length);
+                    //Console.WriteLine("{0}               {1}",topCard,drawPile.read().Length);
                     util.wait(500);
                 }
                 i = mod(i + direction);
             }
-            Console.WriteLine("Player1: {0}\nPlayer2: {1}", playerPile[0].read().Length, playerPile[1].read().Length);
+            //Console.WriteLine("Player1: {0}\nPlayer2: {1}", playerPile[0].read().Length, playerPile[1].read().Length);
         }
     }
 }
