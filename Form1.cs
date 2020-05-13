@@ -89,18 +89,15 @@ namespace Uno
             if (PlayerCard[1] == 'T') { x = 11; }
             if (PlayerCard[1] == 'S') { x = 12; }
 
+            //Universal Colors
             if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
             if (PlayerCard[1] == '*') { x = y + 6; y = 4; }
-
-            //Universal Colors
-
             if (PlayerCard[0] == 'U')
             {
                 if (PlayerCard[1] == 'C') { x = 0; y = 4; }
                 if (PlayerCard[1] == '*') { x = 5; y = 4; }
             }
-            if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
-            if (PlayerCard[1] == '*') { x = y + 6; y = 4; }
+
 
             if (PlayerCard == "Hidden") { x = 12; y = 4; }
 
