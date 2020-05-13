@@ -188,6 +188,7 @@ namespace Uno
                     }
                 }
                 i = mod(i + direction);
+                drawing.Refresh();
             }
         }
     }
