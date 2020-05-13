@@ -186,6 +186,8 @@ namespace Uno
                         else
                             playerPile[i].addCard(input);
                     }
+                    Console.WriteLine("{0}               {1}",topCard,drawPile.read().Length);
+                    util.wait(500);
                 }
                 i = mod(i + direction);
             }
