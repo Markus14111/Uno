@@ -50,27 +50,30 @@ namespace Uno
 
         }
 
-
+        //drawing functions
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             objects = new List<Rectangle>();
 
             int Size = 100;
             int spacing = 100;
-            int offset = 960 - (game.playerHand().Length / 2 * spacing) - ((Size - spacing) / 2);
+            int offset = 960 - ((game.playerHand().Length / 2) * spacing);
 
             //Draw Cards on Players Hand
             for (int i = 0; i < game.playerHand().Length; i++)
-                DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), 1080 - 39 - ((int)(Size * 1.5)), Size);
+                DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), 1080 - 39 - ((int)(Size * 1.5)), Size, true);
             
             //draw Draw-Pile
             DrawPile(e.Graphics, 780, 540 - Size, Size);
             //draw TopCard
-            DrawCard(e.Graphics, game.get_topCard(), 960, 440, Size);
-            
-        }
+            DrawCard(e.Graphics, game.get_topCard(), 960, 440, Size, false);
 
-        private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size)
+            //Draw Opponent Cards
+            for(int i = 0; i < game.get_CPUCards()[0]; i++)
+                DrawCard(e.Graphics, "Hidden", offset + (i * 50), 50, Size, false);
+
+        }
+        private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size, bool createobj)
         {           
             int x = 0, y = 0;
             
@@ -87,16 +90,21 @@ namespace Uno
             if (PlayerCard[1] == 'S') { x = 12; }
 
             //Universal Colors
+
             if (PlayerCard[0] == 'U')
             {
                 if (PlayerCard[1] == 'C') { x = 0; y = 4; }
                 if (PlayerCard[1] == '*') { x = 5; y = 4; }
             }
             if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
-            if (PlayerCard[1] == '*') { x = y + 5; y = 4; }
+            if (PlayerCard[1] == '*') { x = y + 6; y = 4; }
+
+            if (PlayerCard == "Hidden") { x = 12; y = 4; }
 
             e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
-            objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
+            
+            if (createobj)
+                objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
             
         }
         private void DrawPile(Graphics e, int pos_x, int pos_y, int Size)
@@ -109,7 +117,6 @@ namespace Uno
 
             objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
         }
-
         private void HighlightInput(Graphics e)
         {
             
@@ -126,7 +133,7 @@ namespace Uno
                     {
                         if (i < objects.Count - 2)
                             Input = i;
-                        if (i == objects.Count - 2)
+                        if (i == objects.Count - 1)
                             Input = -1;
                     }
                }
@@ -163,7 +170,7 @@ namespace Uno
                 WindowState = FormWindowState.Normal;
             }
         }
-
+        //clean Exit
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Environment.Exit(0);
