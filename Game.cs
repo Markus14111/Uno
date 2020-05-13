@@ -135,8 +135,6 @@ namespace Uno
             //main game loop
             while (running)
             {
-                Console.WriteLine("{0}       {2}        {1}", playerPile[0].read().Length, playerPile[1].read().Length, topCard);
-                util.wait(1000);
                 //first check if flags for +2/4 and skipturn
                 if (blocked) { blocked = false; continue; }
                 if (forceddraw > 0)
@@ -172,8 +170,11 @@ namespace Uno
                 bool valid = false;
                 while (!valid)
                 {
-                    //"+" means drawing, add asking for input here
-                    input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    //-1 means drawing, add asking for input here
+                    if (i == 0)
+                        input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    else
+                        input = -1;
                     if (input == -1)
                     {
                         card = drawCard();
