@@ -16,21 +16,50 @@ namespace Uno
     {
         Bitmap Cards = new Bitmap("Cards.png");
         Game game;
+        bool PlayersTurn = false;
+        Tuple<int, int> Inputposition;
 
         public Form1()
         {
-            InitializeComponent();            
-            game = new Game(this);
+            InitializeComponent();
             DoubleBuffered = true;
+            Inputposition = Tuple.Create(-1, -1);
+
+            game = new Game(this);
+
         }
+
+        public int GetInput()
+        {
+            PlayersTurn = true;
+            
+            while(true)
+            {
+
+            }
+            //+ draw card -> -1
+            // or Name of card -> index card
+
+            PlayersTurn = false;
+            return 0;
+
+        }
+
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            DrawCards(e.Graphics);
+            DrawPiles(e.Graphics);
+            HighlightInput(e.Graphics);
+            
+        }
 
+        private void DrawCards(Graphics e)
+        {
             //Size of Card (= width of Card)
-            int Size = 100;            
+            int Size = 100;
             int offset = 50;
-            int spacing = 40;
+            int spacing = 30;
             int x = 0, y = 0;
 
             string[] PlayerCards = game.playerHand();
@@ -57,13 +86,34 @@ namespace Uno
                 if (PlayerCards[i][1] == 'C') { x = y + 1; y = 4; }
                 if (PlayerCards[i][1] == '*') { x = y + 5; y = 4; }
 
-                e.Graphics.DrawImage(Cards, new Rectangle(offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+                e.DrawImage(Cards, new Rectangle(offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
             }
-
+        }
+        private void DrawPiles(Graphics e)
+        {
+            Console.WriteLine("asd");
+            int Size = 100;
             
+            //Draw Pile
+            int x = 12, y = 4;
+            e.DrawImage(Cards, new Rectangle(250, 350, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+
+
+
+        }
+        private void HighlightInput(Graphics e)
+        {
+            //if ()
         }
 
-        private void Form1_Activated(object sender, EventArgs e)
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (PlayersTurn)
+                Inputposition = Tuple.Create(e.X, e.Y);
+            Refresh();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
         {
             game.run();
         }
