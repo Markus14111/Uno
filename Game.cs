@@ -27,6 +27,15 @@ namespace Uno
 
         public string get_topCard() { return topCard; }
 
+        public int[] get_CPUCards()
+        {
+            int[] output = new int[Playercount - 1];
+            //skip human
+            for (int i = 1; i < Playercount; i++)
+                output[i - 1] = playerPile[i].read().Length;
+            return output;
+        }
+
         private bool isvalid(string card)
         {
             //color condition
