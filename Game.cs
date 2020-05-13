@@ -133,37 +133,38 @@ namespace Uno
             //main game loop
             while (running)
             {
+                Console.WriteLine("{0}       {2}        {1}", playerPile[0].read().Length, playerPile[1].read().Length, topCard);
+                util.wait(1000);
+                //first check if flags for +2/4 and skipturn
+                if (blocked) { blocked = false; continue; }
+                if (forceddraw > 0)
+                {
+                    bool draw = true;
+                    bool canShift = false;
+                    //check if the player CAN play a card
+                    foreach (string card in playerPile[i].read())
+                        if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
+                            canShift = true;
+                    if (canShift)
+                    {
+                        string dinput = "+";    //-----------------------------   USER INTERACTION HERE   ------------------------------
+                        if (dinput.Length == 2)
+                            if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
+                            { draw = false; playCard(dinput); }
+                    }
+                    if (draw)
+                    {
+                        //draw number of cards
+                        for (int j = 0; j < forceddraw; j++)
+                            playerPile[i].addCard(drawCard());
+                        forceddraw = 0;
+                        continue;
+                    }
+                }
+                //normal move
                 bool valid = false;
                 while (!valid)
                 {
-                    Console.WriteLine("{0}       {2}        {1}", playerPile[0].read().Length, playerPile[1].read().Length, topCard);
-                    util.wait(1000);
-                    //first check if flags for +2/4 and skipturn
-                    if (blocked) { blocked = false; continue; }
-                    if (forceddraw > 0)
-                    {
-                        bool draw = true;
-                        bool canShift = false;
-                        //check if the player CAN play a card
-                        foreach (string card in playerPile[i].read())
-                            if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
-                                canShift = true;
-                        if (canShift)
-                        {
-                            string dinput = "+";    //-----------------------------   USER INTERACTION HERE   ------------------------------
-                            if (dinput.Length == 2)
-                                if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
-                                    { draw = false; playCard(dinput); }
-                        }
-                        if (draw)
-                        {
-                            //draw number of cards
-                            for (int j = 0; j < forceddraw; j++)
-                                playerPile[i].addCard(drawCard());
-                            forceddraw = 0;
-                            continue;
-                        }
-                    }
                     //"+" means drawing, add asking for input here
                     string input = "+";             //-----------------------------   USER INTERACTION HERE   ------------------------------
                     if (input == "+")
