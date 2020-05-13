@@ -31,6 +31,8 @@ namespace Uno
 
             game = new Game(this);
 
+
+
         }
 
         public int GetInput()
@@ -39,9 +41,9 @@ namespace Uno
 
             while(!checkValid(Inputposition))
             {
-
+                
             }
-            
+            Console.WriteLine("foudn it");
             //+ draw card -> -1
             // or Name of card -> index card
 
@@ -62,7 +64,7 @@ namespace Uno
                 DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size);
             
             //draw Draw-Pile
-            DrawPile(e.Graphics, (Width / 2) - 180, (Height / 2) - Size, 100);
+            DrawPile(e.Graphics, (Width / 2) - 180, (Height / 2) - Size, Size);
             //draw TopCard
             DrawCard(e.Graphics, game.get_topCard(), Width / 2, Height / 2 - 100, Size);
             
@@ -113,7 +115,8 @@ namespace Uno
 
         private bool checkValid(Tuple<int, int> Input)
         {
-            if (true)
+            //Input is DrawPile
+            if ((Input.Item1 >= (Width / 2) - 180 && Input.Item1 <= ((Width / 2) - 80)) && (Input.Item2 >= ((Height / 2) - 80) && (Input.Item2 <= (((Height / 2) - 230))))) 
                 return true;
 
             return false;
@@ -124,9 +127,11 @@ namespace Uno
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (PlayersTurn)
+            {
                 Inputposition = Tuple.Create(e.X, e.Y);
-
-            Refresh();
+                Refresh();
+            }
+              
         }
         //start Main GameLoop
         private void Form1_Shown(object sender, EventArgs e)
