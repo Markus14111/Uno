@@ -30,7 +30,6 @@ namespace Uno
         public Game(Form1 form)
         {
             drawing = form;
-            PlayerInterface = new Player[2];
         }
 
         //getter
@@ -46,7 +45,15 @@ namespace Uno
                 output[i - 1] = playerPile[i].read().Length;
             return output;
         }
-
+        //main functions
+        private void initPlayers()
+        {
+            PlayerInterface = new Player[Playercount];
+            foreach (Player play in PlayerInterface)
+            {
+                //Add functions here
+            }
+        }
         private bool isvalid(string card)
         {
             //color condition
