@@ -57,8 +57,8 @@ namespace Uno
             objects = new List<Rectangle>();
 
             int Size = 100;
-            int spacing = 100;
-            int offset = 960 - ((game.playerHand().Length / 2) * spacing);
+            int spacing = 40;
+            int offset = 960 - (((game.playerHand().Length - 1) / 2) * spacing) - Size / 2;
 
             //Draw Cards on Players Hand
             for (int i = 0; i < game.playerHand().Length; i++)
@@ -70,8 +70,9 @@ namespace Uno
             DrawCard(e.Graphics, game.get_topCard(), 960, 440, Size, false);
 
             //Draw Opponent Cards
-            for(int i = 0; i < game.get_CPUCards()[0]; i++)
-                DrawCard(e.Graphics, "Hidden", offset + (i * 50), 50, Size, false);
+            offset = 960 - (((game.get_CPUCards()[0] - 1) / 2) * spacing) - Size / 2;
+            for (int i = 0; i < game.get_CPUCards()[0]; i++)
+                DrawCard(e.Graphics, "Hidden", offset + (i * spacing), 50, Size, false);
 
         }
         private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size, bool createobj)
