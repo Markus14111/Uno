@@ -17,7 +17,9 @@ namespace Uno
         Bitmap Cards = new Bitmap("Cards.png");
         Game game;
         bool PlayersTurn = false;
-        Tuple<int, int> Inputposition;
+        int Input = -2;
+        List<Rectangle> objects;
+
 
         public Form1()
         {
@@ -27,46 +29,44 @@ namespace Uno
             WindowState = FormWindowState.Maximized;
 
 
-            Inputposition = Tuple.Create(-1, -1);
-
             game = new Game(this);
-
-
 
         }
 
         public int GetInput()
         {
+            Input = -2;
             PlayersTurn = true;
 
-            while(!checkValid(Inputposition))
+            while(Input == -2)
             {
                 
             }
-            Console.WriteLine("foudn it");
-            //+ draw card -> -1
-            // or Name of card -> index card
 
+            Console.WriteLine("-----" + Input);
             PlayersTurn = false;
-            return 0;
+            
+            return Input;
 
         }
 
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            objects = new List<Rectangle>();
+
             int Size = 100;
             int spacing = 30;
-            int offset = Width / 2 - (game.playerHand().Length / 2 * spacing) - ((Size - spacing) / 2);
+            int offset = 960 - (game.playerHand().Length / 2 * spacing) - ((Size - spacing) / 2);
 
             //Draw Cards on Players Hand
             for (int i = 0; i < game.playerHand().Length; i++)
-                DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size);
+                DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), 1080 - 39 - ((int)(Size * 1.5)), Size);
             
             //draw Draw-Pile
-            DrawPile(e.Graphics, (Width / 2) - 180, (Height / 2) - Size, Size);
+            DrawPile(e.Graphics, 780, 540 - Size, Size);
             //draw TopCard
-            DrawCard(e.Graphics, game.get_topCard(), Width / 2, Height / 2 - 100, Size);
+            DrawCard(e.Graphics, game.get_topCard(), 960, 440, Size);
             
         }
 
@@ -96,6 +96,7 @@ namespace Uno
             if (PlayerCard[1] == '*') { x = y + 5; y = 4; }
 
             e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+            objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
             
         }
         private void DrawPile(Graphics e, int pos_x, int pos_y, int Size)
@@ -105,6 +106,8 @@ namespace Uno
             e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
             e.DrawImage(Cards, new Rectangle(pos_x + 10, pos_y - 5, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
             e.DrawImage(Cards, new Rectangle(pos_x + 20, pos_y - 10, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+
+            objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
         }
 
         private void HighlightInput(Graphics e)
@@ -112,31 +115,29 @@ namespace Uno
             
         }
 
-
-        private bool checkValid(Tuple<int, int> Input)
-        {
-            //Input is DrawPile
-            if ((Input.Item1 >= (Width / 2) - 180 && Input.Item1 <= ((Width / 2) - 80)) && (Input.Item2 >= ((Height / 2) - 80) && (Input.Item2 <= (((Height / 2) - 230))))) 
-                return true;
-
-            return false;
-
-        }
-
         //Get players Input
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (PlayersTurn)
             {
-                Inputposition = Tuple.Create(e.X, e.Y);
-                Refresh();
+               for(int i = 0; i < objects.Count; i++)
+               {
+                    if (objects[i].Contains(e.Location))
+                    {
+                        if (i < objects.Count - 2)
+                            Input = i;
+                        if (i == objects.Count - 2)
+                            Input = -1;
+                    }
+               }
             }
-              
+
         }
         //start Main GameLoop
         private void Form1_Shown(object sender, EventArgs e)
         {
-            game.run();
+            GetInput();
+            game.run();          
         }
         //Toggle Fullscreen
         private void Form1_KeyDown(object sender, KeyEventArgs e)
