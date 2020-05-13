@@ -109,7 +109,7 @@ namespace Uno
             if (playerPile[player].read().Length == 0)
                 return false;
             //check for UNO
-            if (playerPile[player].read().Length == 1 && true)
+            if (playerPile[player].read().Length == 1 && !true)
                 playerPile[player].addCard(drawCard());
             return true;
         }
@@ -135,6 +135,8 @@ namespace Uno
             //main game loop
             while (running)
             {
+                if (i == 0)
+                    util.wait(500);
                 //first check if flags for +2/4 and skipturn
                 if (blocked) { blocked = false; continue; }
                 if (forceddraw > 0)
@@ -202,8 +204,6 @@ namespace Uno
                     }
                 }
                 i = mod(i + direction);
-                if (i == 0)
-                    util.wait(500);
                 drawing.Invalidate();
                 Application.DoEvents();
             }
