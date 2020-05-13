@@ -41,6 +41,7 @@ namespace Uno
             while (Input == -2)
             {
                 //wait for mousepress
+                Application.DoEvents();
             }
 
             PlayersTurn = false;
@@ -55,7 +56,7 @@ namespace Uno
             objects = new List<Rectangle>();
 
             int Size = 100;
-            int spacing = 30;
+            int spacing = 100;
             int offset = 960 - (game.playerHand().Length / 2 * spacing) - ((Size - spacing) / 2);
 
             //Draw Cards on Players Hand
@@ -135,7 +136,6 @@ namespace Uno
         //start Main GameLoop
         private void Form1_Shown(object sender, EventArgs e)
         {
-            GetInput();
             game.run();          
         }
         //clean Exit

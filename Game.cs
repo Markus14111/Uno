@@ -173,7 +173,7 @@ namespace Uno
                 while (!valid)
                 {
                     //"+" means drawing, add asking for input here
-                    input = -1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
                     if (input == -1)
                     {
                         card = drawCard();
