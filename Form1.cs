@@ -21,13 +21,14 @@ namespace Uno
         {
             InitializeComponent();            
             game = new Game(this);
+            DoubleBuffered = true;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
             //Size of Card (= width of Card)
-            int Size = 50;            
+            int Size = 100;            
             int offset = 50;
             int spacing = 40;
             int x = 0, y = 0;
