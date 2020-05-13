@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 delegate bool is_Uno();
-delegate string get_card();
+delegate int get_card();
 
 namespace Uno
 {
@@ -120,8 +120,10 @@ namespace Uno
             forceddraw = 0;
             blocked = false;
             direction = 1;
+            int input = 0;
+            string card = "";
             //initialize player hands
-            playerPile = new Pile[2];
+            playerPile = new Pile[Playercount];
             for (int j = 0; j < playerPile.Length; j++)
                 playerPile[j] = new Pile();
             //initialize drawpile
@@ -142,15 +144,20 @@ namespace Uno
                     bool draw = true;
                     bool canShift = false;
                     //check if the player CAN play a card
-                    foreach (string card in playerPile[i].read())
-                        if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
+                    foreach (string acard in playerPile[i].read())
+                        if ((acard[1] == '+' && isvalid(acard)) || acard[1] == '*')
                             canShift = true;
                     if (canShift)
                     {
-                        string dinput = "+";    //-----------------------------   USER INTERACTION HERE   ------------------------------
-                        if (dinput.Length == 2)
-                            if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
-                            { draw = false; playCard(dinput); }
+                        input = -1;    //-----------------------------   USER INTERACTION HERE   ------------------------------
+                        if (input != -1)
+                        {
+                            card = playerPile[i].draw(i);
+                            if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
+                            { draw = false; playCard(card); }
+                            else
+                                playerPile[i].addCard(card);
+                        }
                     }
                     if (draw)
                     {
@@ -166,10 +173,10 @@ namespace Uno
                 while (!valid)
                 {
                     //"+" means drawing, add asking for input here
-                    string input = "+";             //-----------------------------   USER INTERACTION HERE   ------------------------------
-                    if (input == "+")
+                    input = -1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    if (input == -1)
                     {
-                        string card = drawPile.draw();
+                        card = drawCard();
                         //can drawn card be placed
                         if (isvalid(card))
                         { playCard(card); }
@@ -179,14 +186,15 @@ namespace Uno
                     }
                     else
                     {
-                        if(isvalid(input))
+                        card = playerPile[i].draw(input);
+                        if (isvalid(card))
                         {
-                            playCard(input);
+                            playCard(card);
                             running = checkUno(i);
                             valid = true;
                         }
                         else
-                            playerPile[i].addCard(input);
+                            playerPile[i].addCard(card);
                     }
                 }
                 i = mod(i + direction);

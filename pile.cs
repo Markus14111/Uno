@@ -44,12 +44,9 @@ namespace Uno
             cards.Add(card);
         }
 
-        //draws card at a certain index (allows negative and index over pilesize)
+        //draws card at a certain index 
         public string draw(int index = 0)
         {
-            index = index % cards.Count;
-            if (Math.Sign(index) == -1)
-                index = cards.Count + index;
             string output = cards[index];
             cards.RemoveAt(index);
             return output;
