@@ -135,7 +135,7 @@ namespace Uno
             //main game loop
             while (running)
             {
-                if (i == 0)
+                if (i != 0)
                     util.wait(500);
                 //first check if flags for +2/4 and skipturn
                 if (blocked) { blocked = false; continue; }

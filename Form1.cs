@@ -45,6 +45,7 @@ namespace Uno
             }
 
             PlayersTurn = false;
+            Console.WriteLine(Input);
             
             return Input;
 
@@ -131,7 +132,7 @@ namespace Uno
                {
                     if (objects[i].Contains(e.Location))
                     {
-                        if (i < objects.Count - 2)
+                        if (i <= objects.Count - 2)
                             Input = i;
                         if (i == objects.Count - 1)
                             Input = -1;
