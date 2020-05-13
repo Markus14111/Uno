@@ -4,9 +4,18 @@ using System.Drawing.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+
+delegate bool is_Uno();
+delegate string get_card();
 
 namespace Uno
 {
+    struct Player
+    {
+        public is_Uno Uno;
+        public get_card getCard;
+    }
     class Game
     {
         private string topCard = "R0";
@@ -17,9 +26,11 @@ namespace Uno
         private const int Playercount = 2;
         int direction;
         Form1 drawing;
+        Player[] PlayerInterface;
         public Game(Form1 form)
         {
             drawing = form;
+            PlayerInterface = new Player[2];
         }
 
         //getter
@@ -83,6 +94,18 @@ namespace Uno
         {
             return (number + Playercount) % Playercount;
         }
+
+        //checks for UNO and win
+        private bool checkUno(int player)
+        {
+            //first check for win
+            if (playerPile[player].read().Length == 0)
+                return false;
+            //check for UNO
+            if (playerPile[player].read().Length == 1 && PlayerInterface[player].Uno())
+                playerPile[player].addCard(drawCard());
+            return true;
+        }
         public void run()
         {
             bool running = true;
@@ -96,22 +119,42 @@ namespace Uno
                 playerPile[j] = new Pile();
             //initialize drawpile
             drawPile.newDeck();
+            //starting hand
+            for (int j = 0; j < Playercount; j++)
+                for (int k = 0; k < 5; k++)
+                    playerPile[j].addCard(drawCard());
             //main game loop
             while (running)
             {
                 bool valid = false;
                 while (!valid)
                 {
+                    Console.WriteLine("{0}       {2}        {1}", playerPile[0].read().Length, playerPile[1].read().Length, topCard);
+                    util.wait(1000);
                     //first check if flags for +2/4 and skipturn
                     if (blocked) { blocked = false; continue; }
                     if (forceddraw > 0)
                     {
-                        //TODO ------------------ shift draw to next player (by playing another +2) ----------------------------
-                        //draw number of cards
-                        for (int j = 0; j < forceddraw; j++)
-                            playerPile[i].addCard(drawCard());
-                        forceddraw = 0;
-                        continue;
+                        bool draw = true;
+                        bool canShift = false;
+                        //check if the player CAN play a card
+                        foreach (string card in playerPile[i].read())
+                            if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
+                                canShift = true;
+                        if (canShift)
+                        {
+                            string dinput = "+";    //-----------------------------   USER INTERACTION HERE   ------------------------------
+                            if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
+                                { draw = false; playCard(dinput); }
+                        }
+                        if (draw)
+                        {
+                            //draw number of cards
+                            for (int j = 0; j < forceddraw; j++)
+                                playerPile[i].addCard(drawCard());
+                            forceddraw = 0;
+                            continue;
+                        }
                     }
                     //"+" means drawing, add asking for input here
                     string input = "+";             //-----------------------------   USER INTERACTION HERE   ------------------------------
@@ -120,12 +163,9 @@ namespace Uno
                         string card = drawPile.draw();
                         //can drawn card be placed
                         if (isvalid(card))
-                            playCard(card);
+                        { playCard(card); }
                         else
-                            playerPile[i].addCard(card);
-                        //restock drawpile if needed
-                        if (drawPile.read().Length == 0)
-                            running = false;    
+                            playerPile[i].addCard(card);   
                         valid = true;
                     }
                     else
@@ -133,13 +173,12 @@ namespace Uno
                         if(isvalid(input))
                         {
                             playCard(input);
+                            running = checkUno(i);
                             valid = true;
                         }
                         else
                             playerPile[i].addCard(input);
                     }
-                    Console.WriteLine("{0}               {1}",topCard,drawPile.read().Length);
-                    util.wait(500);
                 }
                 i = mod(i + direction);
             }
