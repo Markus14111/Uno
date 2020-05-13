@@ -109,7 +109,7 @@ namespace Uno
             if (playerPile[player].read().Length == 0)
                 return false;
             //check for UNO
-            if (playerPile[player].read().Length == 1 && PlayerInterface[player].Uno())
+            if (playerPile[player].read().Length == 1 && true)
                 playerPile[player].addCard(drawCard());
             return true;
         }
@@ -135,8 +135,6 @@ namespace Uno
             //main game loop
             while (running)
             {
-                Console.WriteLine("{0}       {2}        {1}", playerPile[0].read().Length, playerPile[1].read().Length, topCard);
-                util.wait(1000);
                 //first check if flags for +2/4 and skipturn
                 if (blocked) { blocked = false; continue; }
                 if (forceddraw > 0)
@@ -172,16 +170,22 @@ namespace Uno
                 bool valid = false;
                 while (!valid)
                 {
-                    //"+" means drawing, add asking for input here
-                    input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    //-1 means drawing, add asking for input here
+                    if (i == 0)
+                        input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                    else
+                        input = -1;
                     if (input == -1)
                     {
                         card = drawCard();
+                        playerPile[i].addCard(card);
                         //can drawn card be placed
                         if (isvalid(card))
-                        { playCard(card); }
-                        else
-                            playerPile[i].addCard(card);   
+                        {   
+                            drawing.Invalidate();
+                            util.wait(250);
+                            playCard(playerPile[i].draw(-1));
+                        } 
                         valid = true;
                     }
                     else
@@ -198,6 +202,8 @@ namespace Uno
                     }
                 }
                 i = mod(i + direction);
+                if (i == 0)
+                    util.wait(500);
                 drawing.Invalidate();
                 Application.DoEvents();
             }
