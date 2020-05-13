@@ -38,12 +38,11 @@ namespace Uno
             Input = -2;
             PlayersTurn = true;
 
-            while(Input == -2)
+            while (Input == -2)
             {
-                
+                //wait for mousepress
             }
 
-            Console.WriteLine("-----" + Input);
             PlayersTurn = false;
             
             return Input;
@@ -139,6 +138,8 @@ namespace Uno
             GetInput();
             game.run();          
         }
+        //clean Exit
+
         //Toggle Fullscreen
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -163,6 +164,9 @@ namespace Uno
             }
         }
 
-
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Environment.Exit(0);
+        }
     }
 }
