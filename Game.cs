@@ -151,8 +151,9 @@ namespace Uno
                         if (canShift)
                         {
                             string dinput = "+";    //-----------------------------   USER INTERACTION HERE   ------------------------------
-                            if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
-                                { draw = false; playCard(dinput); }
+                            if (dinput.Length == 2)
+                                if ((dinput[1] == '+' && isvalid(dinput)) || dinput[1] == '*')
+                                    { draw = false; playCard(dinput); }
                         }
                         if (draw)
                         {
