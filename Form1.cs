@@ -23,6 +23,10 @@ namespace Uno
         {
             InitializeComponent();
             DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
+
+
             Inputposition = Tuple.Create(-1, -1);
 
             game = new Game(this);
@@ -32,11 +36,12 @@ namespace Uno
         public int GetInput()
         {
             PlayersTurn = true;
-            
-            while(true)
+
+            while(!checkValid(Inputposition))
             {
 
             }
+            
             //+ draw card -> -1
             // or Name of card -> index card
 
@@ -48,74 +53,110 @@ namespace Uno
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            DrawCards(e.Graphics);
-            DrawPiles(e.Graphics);
-            HighlightInput(e.Graphics);
-            
-        }
-
-        private void DrawCards(Graphics e)
-        {
-            //Size of Card (= width of Card)
             int Size = 100;
-            int offset = 50;
             int spacing = 30;
-            int x = 0, y = 0;
+            int offset = Width / 2 - (game.playerHand().Length / 2 * spacing) - ((Size - spacing) / 2);
 
-            string[] PlayerCards = game.playerHand();
-            for (int i = 0; i < PlayerCards.Length; i++)
-            {
-                //Y Position
-                if (PlayerCards[i][0] == 'B') { y = 0; }
-                if (PlayerCards[i][0] == 'G') { y = 1; }
-                if (PlayerCards[i][0] == 'R') { y = 2; }
-                if (PlayerCards[i][0] == 'Y') { y = 3; }
-
-                //X Position
-                if (PlayerCards[i][1] > 47 && PlayerCards[i][1] < 58) { x = PlayerCards[i][1] - 48; }
-                if (PlayerCards[i][1] == '+') { x = 10; }
-                if (PlayerCards[i][1] == 'T') { x = 11; }
-                if (PlayerCards[i][1] == 'S') { x = 12; }
-
-                //Universal Colors
-                if (PlayerCards[i][0] == 'U')
-                {
-                    if (PlayerCards[i][1] == 'C') { x = 0; y = 4; }
-                    if (PlayerCards[i][1] == '*') { x = 5; y = 4; }
-                }
-                if (PlayerCards[i][1] == 'C') { x = y + 1; y = 4; }
-                if (PlayerCards[i][1] == '*') { x = y + 5; y = 4; }
-
-                e.DrawImage(Cards, new Rectangle(offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
-            }
-        }
-        private void DrawPiles(Graphics e)
-        {
-            Console.WriteLine("asd");
-            int Size = 100;
+            //Draw Cards on Players Hand
+            for (int i = 0; i < game.playerHand().Length; i++)
+                DrawCard(e.Graphics, game.playerHand()[i], offset + (i * spacing), Height - 39 - ((int)(Size * 1.5)), Size);
             
+            //draw Draw-Pile
+            DrawPile(e.Graphics, (Width / 2) - 180, (Height / 2) - Size, 100);
+            //draw TopCard
+            DrawCard(e.Graphics, game.get_topCard(), Width / 2, Height / 2 - 100, Size);
+            
+        }
+
+        private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size)
+        {           
+            int x = 0, y = 0;
+            
+            //Y Position
+            if (PlayerCard[0] == 'B') { y = 0; }
+            if (PlayerCard[0] == 'G') { y = 1; }
+            if (PlayerCard[0] == 'R') { y = 2; }
+            if (PlayerCard[0] == 'Y') { y = 3; }
+
+            //X Position
+            if (PlayerCard[1] > 47 && PlayerCard[1] < 58) { x = PlayerCard[1] - 48; }
+            if (PlayerCard[1] == '+') { x = 10; }
+            if (PlayerCard[1] == 'T') { x = 11; }
+            if (PlayerCard[1] == 'S') { x = 12; }
+
+            //Universal Colors
+            if (PlayerCard[0] == 'U')
+            {
+                if (PlayerCard[1] == 'C') { x = 0; y = 4; }
+                if (PlayerCard[1] == '*') { x = 5; y = 4; }
+            }
+            if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
+            if (PlayerCard[1] == '*') { x = y + 5; y = 4; }
+
+            e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+            
+        }
+        private void DrawPile(Graphics e, int pos_x, int pos_y, int Size)
+        {            
             //Draw Pile
             int x = 12, y = 4;
-            e.DrawImage(Cards, new Rectangle(250, 350, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
-
-
-
+            e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+            e.DrawImage(Cards, new Rectangle(pos_x + 10, pos_y - 5, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
+            e.DrawImage(Cards, new Rectangle(pos_x + 20, pos_y - 10, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
         }
+
         private void HighlightInput(Graphics e)
         {
-            //if ()
+            
         }
 
+
+        private bool checkValid(Tuple<int, int> Input)
+        {
+            if (true)
+                return true;
+
+            return false;
+
+        }
+
+        //Get players Input
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (PlayersTurn)
                 Inputposition = Tuple.Create(e.X, e.Y);
+
             Refresh();
         }
-
+        //start Main GameLoop
         private void Form1_Shown(object sender, EventArgs e)
         {
             game.run();
         }
+        //Toggle Fullscreen
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Toggle Fullscreen
+            if (e.KeyCode == Keys.F11)
+            {
+                if (WindowState == FormWindowState.Normal)
+                {
+                    FormBorderStyle = FormBorderStyle.None;
+                    WindowState = FormWindowState.Maximized;
+                }
+                else
+                {
+                    FormBorderStyle = FormBorderStyle.FixedSingle;
+                    WindowState = FormWindowState.Normal;
+                }
+            }
+            if (e.KeyCode == Keys.Escape)
+            {
+                FormBorderStyle = FormBorderStyle.FixedSingle;
+                WindowState = FormWindowState.Normal;
+            }
+        }
+
+
     }
 }
