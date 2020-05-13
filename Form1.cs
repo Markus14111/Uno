@@ -86,14 +86,15 @@ namespace Uno
             if (PlayerCard[1] == 'T') { x = 11; }
             if (PlayerCard[1] == 'S') { x = 12; }
 
+            if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
+            if (PlayerCard[1] == '*') { x = y + 6; y = 4; }
+
             //Universal Colors
             if (PlayerCard[0] == 'U')
             {
                 if (PlayerCard[1] == 'C') { x = 0; y = 4; }
                 if (PlayerCard[1] == '*') { x = 5; y = 4; }
             }
-            if (PlayerCard[1] == 'C') { x = y + 1; y = 4; }
-            if (PlayerCard[1] == '*') { x = y + 5; y = 4; }
 
             e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
             objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));

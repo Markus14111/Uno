@@ -109,7 +109,7 @@ namespace Uno
             if (playerPile[player].read().Length == 0)
                 return false;
             //check for UNO
-            if (playerPile[player].read().Length == 1 && PlayerInterface[player].Uno())
+            if (playerPile[player].read().Length == 1 && true)
                 playerPile[player].addCard(drawCard());
             return true;
         }
@@ -178,11 +178,14 @@ namespace Uno
                     if (input == -1)
                     {
                         card = drawCard();
+                        playerPile[i].addCard(card);
                         //can drawn card be placed
                         if (isvalid(card))
-                        { playCard(card); }
-                        else
-                            playerPile[i].addCard(card);   
+                        {   
+                            drawing.Invalidate();
+                            util.wait(250);
+                            playCard(playerPile[i].draw(-1));
+                        } 
                         valid = true;
                     }
                     else
@@ -199,6 +202,8 @@ namespace Uno
                     }
                 }
                 i = mod(i + direction);
+                if (i == 0)
+                    util.wait(500);
                 drawing.Invalidate();
                 Application.DoEvents();
             }

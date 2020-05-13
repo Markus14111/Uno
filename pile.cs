@@ -47,6 +47,7 @@ namespace Uno
         //draws card at a certain index 
         public string draw(int index = 0)
         {
+            index = (index + cards.Count) % cards.Count;
             string output = cards[index];
             cards.RemoveAt(index);
             return output;
