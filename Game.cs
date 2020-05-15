@@ -196,7 +196,6 @@ namespace Uno
                         input = drawing.GetInput().Item1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
                     else
                         input = -1;
-                    input = PlayerInterface[i].getCard(playerPile[i].read(), topCard);   //-----------------------------------------------------------add uno question
                     if (input == -1)
                     {
                         card = drawCard();
