@@ -14,12 +14,11 @@ namespace Uno
 {
     public partial class Form1 : Form
     {
-        Bitmap Cards = new Bitmap("Cards.png");
-        Game game;
-        bool PlayersTurn = false;
-        int Input = -2;
-        List<Rectangle> objects;
-
+        private Bitmap Cards = new Bitmap("Cards.png");
+        private Game game;
+        private bool PlayersTurn = false;
+        private int Input = -2;
+        private List<Rectangle> objects;
 
         public Form1()
         {
@@ -28,30 +27,27 @@ namespace Uno
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
 
-
             game = new Game(this);
 
         }
 
         public int GetInput(string[] cards, string top)
         {
+            //set Invalid Input
             Input = -2;
             PlayersTurn = true;
 
+            //wait for mousepressEvent
             while (Input == -2)
-            {
-                //wait for mousepress
                 Application.DoEvents();
-            }
 
             PlayersTurn = false;
-            Console.WriteLine(Input);
             
             return Input;
-
         }
 
-        //drawing functions
+        //drawing functions {
+        //main
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             objects = new List<Rectangle>();
@@ -119,10 +115,6 @@ namespace Uno
 
             objects.Add(new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)));
         }
-        private void HighlightInput(Graphics e)
-        {
-            
-        }
 
         //Get players Input
         private void Form1_MouseClick(object sender, MouseEventArgs e)
@@ -147,8 +139,6 @@ namespace Uno
         {
             game.run();          
         }
-        //clean Exit
-
         //Toggle Fullscreen
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
