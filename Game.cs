@@ -6,15 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-delegate bool is_Uno();
-delegate int get_card();
+delegate int get_card(string[] cards, string top);
+delegate string get_Color(string[] cards);
 
 namespace Uno
 {
     struct Player
     {
-        public is_Uno Uno;
-        public get_card getCard;
+        public AI ai;
+        public get_card  getCard;
+        public get_card  getShift;
+        public get_Color getColor;
     }
     class Game
     {
@@ -30,6 +32,7 @@ namespace Uno
         public Game(Form1 form)
         {
             drawing = form;
+            initPlayers();
         }
 
         //getter
@@ -48,10 +51,23 @@ namespace Uno
         //main functions
         private void initPlayers()
         {
+            //inits the delegates to ai and human input functions
             PlayerInterface = new Player[Playercount];
-            foreach (Player play in PlayerInterface)
+            //human
+            Player play = new Player();
+            play.getCard = drawing.GetInput;
+            play.getShift = drawing.GetInput;
+            play.getColor = (string[] cards) => { return "R"; };    //lambda expression lul first time i use one ^^ AYAYA
+            PlayerInterface[0] = play;
+            //AI
+            for (int i = 1; i < PlayerInterface.Length; i++)
             {
-                //Add functions here
+                play = new Player();
+                play.ai = new AI();
+                play.getCard = play.ai.getCard;
+                play.getShift = play.ai.getCard;
+                play.getColor = play.ai.chooseColor;
+                PlayerInterface[i] = play;
             }
         }
         private bool isvalid(string card)
@@ -65,11 +81,11 @@ namespace Uno
             //no condition
             return false;
         }
-        private void playCard(string card)
+        private void playCard(string card, int player)
         {
             //U lets you choose a color
             if (card[0] == 'U')
-                card = "R" + card[1];     //----------------------------    USER INTERACTION HERE     ---------------------
+                card = PlayerInterface[player].getColor(playerPile[player].read()) + card[1];     //----------------------------    USER INTERACTION HERE     ---------------------
             //apply special effects of card
             switch (card[1])
             {
@@ -135,8 +151,11 @@ namespace Uno
             //main game loop
             while (running)
             {
+                i = mod(i + direction);
+                drawing.Invalidate();                
                 if (i != 0)
                     util.wait(500);
+                Application.DoEvents();
                 //first check if flags for +2/4 and skipturn
                 if (blocked) { blocked = false; continue; }
                 if (forceddraw > 0)
@@ -149,12 +168,12 @@ namespace Uno
                             canShift = true;
                     if (canShift)
                     {
-                        input = -1;    //-----------------------------   USER INTERACTION HERE   ------------------------------
+                        input = PlayerInterface[i].getShift(playerPile[i].read(),topCard);   //---------------------------------------------add uno question
                         if (input != -1)
                         {
-                            card = playerPile[i].draw(i);
+                            card = playerPile[i].draw(input);
                             if ((card[1] == '+' && isvalid(card)) || card[1] == '*')
-                            { draw = false; playCard(card); }
+                            { draw = false; playCard(card,i); }
                             else
                                 playerPile[i].addCard(card);
                         }
@@ -163,20 +182,17 @@ namespace Uno
                     {
                         //draw number of cards
                         for (int j = 0; j < forceddraw; j++)
-                            playerPile[i].addCard(drawCard());
+                        { util.wait(500); drawing.Refresh(); playerPile[i].addCard(drawCard()); }
                         forceddraw = 0;
-                        continue;
                     }
+                    continue;
                 }
                 //normal move
                 bool valid = false;
                 while (!valid)
                 {
                     //-1 means drawing, add asking for input here
-                    if (i == 0)
-                        input = drawing.GetInput();             //-----------------------------   USER INTERACTION HERE   ------------------------------
-                    else
-                        input = -1;
+                    input = PlayerInterface[i].getCard(playerPile[i].read(), topCard);   //-----------------------------------------------------------add uno question
                     if (input == -1)
                     {
                         card = drawCard();
@@ -186,7 +202,7 @@ namespace Uno
                         {   
                             drawing.Invalidate();
                             util.wait(250);
-                            playCard(playerPile[i].draw(-1));
+                            playCard(playerPile[i].draw(-1),i);
                         } 
                         valid = true;
                     }
@@ -195,7 +211,7 @@ namespace Uno
                         card = playerPile[i].draw(input);
                         if (isvalid(card))
                         {
-                            playCard(card);
+                            playCard(card,i);
                             running = checkUno(i);
                             valid = true;
                         }
@@ -203,10 +219,9 @@ namespace Uno
                             playerPile[i].addCard(card);
                     }
                 }
-                i = mod(i + direction);
-                drawing.Invalidate();
-                Application.DoEvents();
             }
+            drawing.Refresh();
+            Console.WriteLine("GAME OVER");
         }
     }
 }

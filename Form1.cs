@@ -33,7 +33,7 @@ namespace Uno
 
         }
 
-        public int GetInput()
+        public int GetInput(string[] cards, string top)
         {
             Input = -2;
             PlayersTurn = true;
