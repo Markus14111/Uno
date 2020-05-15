@@ -16,9 +16,9 @@ namespace Uno
         }
 
         //-------- public functions --------------
-        public int getCard(string[] cards, string top)
+        public Tuple<int, bool> getCard(string[] cards, string top)
         {
-            return rand.Next(-1,cards.Length);
+            return Tuple.Create(rand.Next(-1,cards.Length), true);
         }
 
         public string chooseColor(string[] cards)

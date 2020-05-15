@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-delegate int get_card(string[] cards, string top);
+delegate Tuple<int, bool> get_card(string[] cards, string top);
 delegate string get_Color(string[] cards);
 
 namespace Uno
@@ -22,7 +22,7 @@ namespace Uno
     {
         private string topCard = "R0";
         private Pile drawPile = new Pile();
-        private Pile[] playerPile;
+        private Pile[] playerPile; 
         private bool blocked;
         private int forceddraw;
         private const int Playercount = 2;
@@ -168,7 +168,7 @@ namespace Uno
                             canShift = true;
                     if (canShift)
                     {
-                        input = PlayerInterface[i].getShift(playerPile[i].read(),topCard);   //---------------------------------------------add uno question
+                        input = PlayerInterface[i].getShift(playerPile[i].read(),topCard).Item1 ;   //---------------------------------------------add uno question
                         if (input != -1)
                         {
                             card = playerPile[i].draw(input);
