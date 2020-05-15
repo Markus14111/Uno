@@ -17,6 +17,7 @@ namespace Uno
         private Bitmap Cards = new Bitmap("Cards.png");
         private Game game;
         private bool PlayersTurn = false;
+        private bool Uno = false;
         private int Input = -2;
         private List<Rectangle> objects;
 
@@ -31,7 +32,7 @@ namespace Uno
 
         }
 
-        public int GetInput()
+        public Tuple<int, bool> GetInput()
         {
             //set Invalid Input
             Input = -2;
@@ -43,14 +44,17 @@ namespace Uno
 
             PlayersTurn = false;
             
-            return Input;
+            return Tuple.Create(Input, Uno);
         }
 
         //drawing functions {
         //main
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //Reset 
             objects = new List<Rectangle>();
+            if (game.playerHand().Length > 1)
+                Uno = false;
 
             int Size = 100;
             int spacing = 40;
@@ -70,6 +74,11 @@ namespace Uno
             for (int i = 0; i < game.get_CPUCards()[0]; i++)
                 DrawCard(e.Graphics, "Hidden", offset + (i * spacing), 50, Size, false);
 
+            //Draw Uno Button
+            if(game.playerHand().Length == 1 && Uno)            
+                DrawCard(e.Graphics, "UnoFire", Width / 2 - 400, Height / 2, Size, true);
+            else
+                DrawCard(e.Graphics, "Uno", Width / 2 - 400, Height / 2, Size, true);
         }
         private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size, bool createobj)
         {           
@@ -97,7 +106,10 @@ namespace Uno
             }
 
 
+            //special Cases
             if (PlayerCard == "Hidden") { x = 12; y = 4; }
+            if (PlayerCard == "Uno") { x = 10; y = 4;  }
+            if (PlayerCard == "UnoFire") { x = 11; y = 4; }
 
             e.DrawImage(Cards, new Rectangle(pos_x, pos_y, Size, (int)(Size * 1.5)), x * 200, y * 300, 200, 300, GraphicsUnit.Pixel);
             
@@ -125,10 +137,12 @@ namespace Uno
                {
                     if (objects[i].Contains(e.Location))
                     {
-                        if (i <= objects.Count - 2)
+                        if (i <= objects.Count - 3)
                             Input = i;
-                        if (i == objects.Count - 1)
+                        if (i == objects.Count - 2)
                             Input = -1;
+                        if (i == objects.Count - 1)
+                            Uno = true;
                     }
                }
             }
