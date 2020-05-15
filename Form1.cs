@@ -32,7 +32,7 @@ namespace Uno
 
         }
 
-        public Tuple<int, bool> GetInput()
+        public Tuple<int, bool> GetInput(string[] cards, string top)
         {
             //set Invalid Input
             Input = -2;

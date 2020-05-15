@@ -193,7 +193,7 @@ namespace Uno
                 {
                     //-1 means drawing, add asking for input here
                     if (i == 0)
-                        input = drawing.GetInput().Item1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
+                        input = drawing.GetInput(playerPile[i].read(),topCard).Item1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
                     else
                         input = -1;
                     if (input == -1)
