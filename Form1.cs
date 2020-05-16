@@ -17,7 +17,7 @@ namespace Uno
         private Bitmap Cards = new Bitmap("Cards.png");
         private Game game;
         private bool PlayersTurn = false;
-        private bool Uno = false;
+        private bool Uno = false, Uno_set = false;
         private int Input = -2;
         private List<Rectangle> objects;
 
@@ -53,8 +53,10 @@ namespace Uno
         {
             //Reset 
             objects = new List<Rectangle>();
-            if (game.playerHand().Length > 1)
-                Uno = false;
+            if (!Uno_set)
+                if (game.playerHand().Length > 1)
+                    Uno = false;
+            Uno_set = false;
 
             int Size = 100;
             int spacing = 40;
@@ -74,11 +76,11 @@ namespace Uno
             for (int i = 0; i < game.get_CPUCards()[0]; i++)
                 DrawCard(e.Graphics, "Hidden", offset + (i * spacing), 50, Size, false);
 
-            //Draw Uno Button
-            if(game.playerHand().Length == 1 && Uno)            
-                DrawCard(e.Graphics, "UnoFire", Width / 2 - 400, Height / 2, Size, true);
+            //Draw Uno Button 
+            if(game.playerHand().Length <= 2 && Uno)            
+                DrawCard(e.Graphics, "UnoFire", Width / 2 - 450, Height - 225, Size, true);
             else
-                DrawCard(e.Graphics, "Uno", Width / 2 - 400, Height / 2, Size, true);
+                DrawCard(e.Graphics, "Uno", Width / 2 - 450, Height - 225, Size, true);
         }
         private void DrawCard(Graphics e, string PlayerCard, int pos_x, int pos_y, int Size, bool createobj)
         {           
@@ -142,7 +144,12 @@ namespace Uno
                         if (i == objects.Count - 2)
                             Input = -1;
                         if (i == objects.Count - 1)
+                        {
+                            Uno_set = true;
                             Uno = true;
+                            Refresh();
+                        }
+                                            
                     }
                }
             }
