@@ -192,10 +192,7 @@ namespace Uno
                 while (!valid)
                 {
                     //-1 means drawing, add asking for input here
-                    if (i == 0)
-                        input = drawing.GetInput(playerPile[i].read(),topCard).Item1;             //-----------------------------   USER INTERACTION HERE   ------------------------------
-                    else
-                        input = -1;
+                    input = PlayerInterface[i].getCard(playerPile[i].read(), topCard).Item1;
                     if (input == -1)
                     {
                         card = drawCard();
